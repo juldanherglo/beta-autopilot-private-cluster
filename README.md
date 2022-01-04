@@ -35,22 +35,25 @@ provider "kubernetes" {
 }
 
 module "gke" {
-  source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster"
-  project_id                 = "<PROJECT ID>"
-  name                       = "gke-test-1"
-  region                     = "us-central1"
-  zones                      = ["us-central1-a", "us-central1-b", "us-central1-f"]
-  network                    = "vpc-01"
-  subnetwork                 = "us-central1-01"
-  ip_range_pods              = "us-central1-01-gke-01-pods"
-  ip_range_services          = "us-central1-01-gke-01-services"
-  horizontal_pod_autoscaling = true
-  enable_private_endpoint    = true
-  enable_private_nodes       = true
-  master_ipv4_cidr_block     = "10.0.0.0/28"
-  enable_autopilot           = true
+  source = "github.com/juldanherglo/beta-autopilot-private-cluster?ref=v1.0.2"
 
+  name              = "test-cluster"
+  project_id        = var.gcp_project_name
+  region            = var.gcp_region
+  ip_range_pods     = "vpc-subnet-pods"
+  ip_range_services = "vpc-subnet-services"
+  network           = var.network_name
+  subnetwork        = var.private_subnets_name
+
+  kubernetes_version              = "1.20.12-gke.1500"
+  zones                           = ["europe-west3-a", "europe-west3-b", "europe-west3-c"]
+  horizontal_pod_autoscaling      = true
+  enable_private_endpoint         = false
+  enable_private_nodes            = true
+  enable_vertical_pod_autoscaling = true
+  master_ipv4_cidr_block          = "172.16.0.0/28"
 }
+
 ```
 
 <!-- do not understand what this is about -->
