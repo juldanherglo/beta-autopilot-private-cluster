@@ -28,14 +28,13 @@ There are multiple examples included in the [examples](https://github.com/terraf
 data "google_client_config" "default" {}
 
 provider "kubernetes" {
-  load_config_file       = false
   host                   = "https://${module.gke.endpoint}"
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(module.gke.ca_certificate)
 }
 
 module "gke" {
-  source = "github.com/juldanherglo/beta-autopilot-private-cluster?ref=v1.0.2"
+  source = "github.com/juldanherglo/beta-autopilot-private-cluster?ref=v1.0.3"
 
   name              = "test-cluster"
   project_id        = var.gcp_project_name
@@ -52,6 +51,49 @@ module "gke" {
   enable_private_nodes            = true
   enable_vertical_pod_autoscaling = true
   master_ipv4_cidr_block          = "172.16.0.0/28"
+}
+
+resource "kubernetes_deployment" "test" {
+  metadata {
+    name      = "nginx"
+    namespace = "default"
+  }
+  spec {
+    replicas = 2
+    selector {
+      match_labels = {
+        app = "MyTestApp"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "MyTestApp"
+        }
+      }
+      spec {
+        container {
+          image = "nginx"
+          name  = "nginx-container"
+          port {
+            container_port = 80
+          }
+          resources {
+            limits = {
+              cpu               = "500m"
+              ephemeral-storage = "1Gi"
+              memory            = "2Gi"
+            }
+            requests = {
+              cpu               = "500m"
+              ephemeral-storage = "1Gi"
+              memory            = "2Gi"
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 ```
