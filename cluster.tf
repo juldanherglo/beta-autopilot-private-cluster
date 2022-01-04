@@ -97,10 +97,6 @@ resource "google_container_cluster" "primary" {
       }
     }
 
-    dns_cache_config {
-      enabled = var.dns_cache
-    }
-
     dynamic "gce_persistent_disk_csi_driver_config" {
       for_each = local.cluster_gce_pd_csi_config
 

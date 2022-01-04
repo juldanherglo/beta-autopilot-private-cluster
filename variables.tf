@@ -358,12 +358,6 @@ variable "istio_auth" {
   default     = "AUTH_MUTUAL_TLS"
 }
 
-variable "dns_cache" {
-  type        = bool
-  description = "(Beta) The status of the NodeLocal DNSCache addon."
-  default     = true
-}
-
 variable "gce_pd_csi_driver" {
   type        = bool
   description = "(Beta) Whether this cluster should enable the Google Compute Engine Persistent Disk Container Storage Interface (CSI) Driver."
